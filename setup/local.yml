@@ -14,8 +14,7 @@ local:
           dhcp:
             from: 10.16.0.2
             to: 10.16.255.254
-          gateway:
-            ip: 10.16.0.1
+          gateway: 10.16.0.1
         wlan_nic_name: wlp4s0
       vms:
         - role: master

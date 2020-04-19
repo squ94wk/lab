@@ -28,12 +28,12 @@
 
 - name: Assign bridge IP addr
   command:
-    cmd: "ip addr add dev {{ network.subnet.name }} {{ network.subnet.gateway.ip }}"
+    cmd: "ip addr add dev {{ network.subnet.name }} {{ network.subnet.gateway }}"
   failed_when: no
 
 - name: Set up route
   command:
-    cmd: "ip route add {{ network.subnet.cidr }} via {{ network.subnet.gateway.ip }} dev {{ network.subnet.name }}"
+    cmd: "ip route add {{ network.subnet.cidr }} via {{ network.subnet.gateway }} dev {{ network.subnet.name }}"
   failed_when: no
 
 - name: Set up iptables rules
