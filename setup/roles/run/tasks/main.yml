@@ -1,0 +1,9 @@
+- name: Start DHCP & DNS Server
+  become: yes
+  shell: "(cd ../dhcp; /home/squawk/go/bin/coredhcp >/dev/null 2>&1 &)"
+
+- name: Start VMs
+  command:
+    cmd: "qemu-system-x86_64 -readconfig {{ item.role }}-{{ item.id }}.config -net none -daemonize"
+    chdir: vms
+  with_items: "{{ vms }}"

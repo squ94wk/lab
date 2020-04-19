@@ -1,0 +1,44 @@
+local:
+  hosts:
+    localhost:
+      ansible_connection: local
+      ansible_python_interpreter: /usr/bin/python3
+      virt:
+        storage:
+          base_image: ../fcos.qcow2
+      network:
+        domain: local.home
+        subnet:
+          name: k8s
+          cidr: 10.16.0.0/16
+          dhcp:
+            from: 10.16.0.2
+            to: 10.16.255.254
+          gateway:
+            ip: 10.16.0.1
+        wlan_nic_name: wlp4s0
+      vms:
+        - role: master
+          id: 0
+          nics:
+            - mac: "02:07:b1:1d:d6:19"
+              name: k8s-tap0
+        - role: master
+          id: 1
+          nics:
+            - mac: "02:80:24:93:c1:ca"
+              name: k8s-tap1
+        - role: worker
+          id: 0
+          nics:
+            - mac: "02:63:23:06:1e:b6"
+              name: k8s-tap2
+        - role: worker
+          id: 1
+          nics:
+            - mac: "02:c8:36:2b:17:c0"
+              name: k8s-tap3
+      admin:
+        password_hash: "$6$fish$aRBITJVOC0PCU8EyqSUVBXTqaDZVnxll5xnFKE7ARm1MgRj7D7v3mLTxw4B8316.mFx9Y9eYGpPR.MINiOGee1"
+        ssh_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCm7J37zORFjge6pjUJLb6QS47O+9TiuOcVl0gUkHBj7wMhjnITTcV7L06g50G5YbJQFo0z2QA2Jd6GCw+OX0N2xNHllO3mJnRr80nqkI2boID/sEJZ7beEim8G3Q0VHqoqvNOlb3Lf1UTe+1Aa2EaAIOo2/R26XO7anoQljQTs2IOMfJ207TDfDYCzVqF5V7YXRE2j0qsSt9gPh3Bn17DbXdovD86/mC7bTo8celed1E2Gg7HAfjUxD0YxAQVLluw8TakdtX2HUulEMYlPI6ePPkTJ107HbECKogjU3LM1Q0dXXltxpJYYyE+vjwNsRNoOK+/cf7KiZzyISvRmICviindKeyDCG8F1xbgdKApG8efyOsbk2ayhtEW/8GiQi4hz06zh8okSTlUn/oqUUL0+T42GyZqNlf2RY0lsSNYdtfHm6HZrB6mv84gTbVHGUL95AUlBECZv2oSA7PcksM02giJXscfIdhfcwLXEg2Eq6nNtJkzC6vEnKblST+CfVWU= squawk@archlinux"
+

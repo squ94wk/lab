@@ -1,0 +1,43 @@
+- name: Create Bridge
+  command:
+    cmd: "ip link add {{ network.subnet.name }} type bridge"
+  failed_when: no
+
+- name: Create tap devices
+  command:
+    cmd: "ip tuntap add {{ item.nics[0].name }} mode tap"
+  with_items: "{{ vms }}"
+  failed_when: no
+
+- name: Set bridge up
+  command:
+    cmd: "ip link set {{ network.subnet.name }} up"
+  failed_when: no
+
+- name: Set tap's up
+  command:
+    cmd: "ip link set {{ item.nics[0].name }} up"
+  with_items: "{{ vms }}"
+  failed_when: no
+
+- name: Enslave tap's
+  command:
+    cmd: "ip link set {{ item.nics[0].name }} master {{ network.subnet.name }}"
+  with_items: "{{ vms }}"
+  failed_when: no
+
+- name: Assign bridge IP addr
+  command:
+    cmd: "ip addr add dev {{ network.subnet.name }} {{ network.subnet.gateway.ip }}"
+  failed_when: no
+
+- name: Set up iptables rules
+  command:
+    cmd: "{{ item }}"
+  with_items:
+    - "iptables --append FORWARD -i {{ network.subnet.name }} -o {{ network.wlan_nic_name }} -j ACCEPT"
+    - "iptables --append FORWARD -o {{ network.subnet.name }} -i {{ network.wlan_nic_name }} -j ACCEPT"
+    - "iptables -t nat --append POSTROUTING -o {{ network.subnet.name }} -j MASQUERADE"
+    - "iptables --append FORWARD -i {{ network.subnet.name }} -j ACCEPT"
+    - "iptables --append FORWARD -o {{ network.subnet.name }} -j ACCEPT"
+  failed_when: no

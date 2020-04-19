@@ -1,0 +1,9 @@
+- hosts: local
+  roles:
+    - name: vms
+      tags: prep_vms
+    - name: network
+      become: yes
+      tags: network
+    - name: run
+      tags: run

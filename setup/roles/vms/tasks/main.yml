@@ -1,0 +1,39 @@
+- name: Create vms directory
+  file:
+    dest: vms
+    state: directory
+
+- name: Create VM config files
+  template:
+    src: templates/vm.config
+    dest: "vms/{{ item.role }}-{{ item.id }}.config"
+  with_items: "{{ vms }}"
+
+- name: Create VM ignition yaml files
+  template:
+    src: templates/vm.ign
+    dest: "vms/{{ item.role }}-{{ item.id }}.yml.ign"
+  with_items: "{{ vms }}"
+  register: ignition
+
+- name: get user id
+  become: yes
+  user:
+    name: squawk
+  register: user
+
+- name: Transpile VM ignition files
+  command:
+    cmd: |
+      docker run --rm -i
+      --user {{ user.uid }}
+      -v ${PWD}:/fcos --workdir /fcos
+      fcct --pretty --strict -o vms/{{ item.role }}-{{ item.id }}.ign
+    stdin: "{{ lookup( 'file', 'vms/' + item.role + '-' + (item.id | string) + '.yml.ign' ) }}"
+  with_items: "{{ vms }}"
+  when: "ignition.changed"
+
+- name: Create VM disk
+  command:
+    cmd: "qemu-img create -f qcow2 -b {{ virt.storage.base_image }} vms/{{ item.role }}-{{ item.id }}.qcow2"
+  with_items: "{{ vms }}"

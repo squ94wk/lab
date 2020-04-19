@@ -1,0 +1,19 @@
+variant: fcos
+version: 1.0.0
+
+passwd:
+  users:
+    - name: admin
+      password_hash: "{{ admin.password_hash }}"
+      ssh_authorized_keys:
+        - "{{ admin.ssh_public_key }}"
+      groups:
+        - wheel
+
+storage:
+  files:
+    - path: /etc/hostname
+      overwrite: true
+      contents:
+        inline: "{{ item.role }}-{{ item.id }}.{{ network.subnet.name }}.{{ network.domain }}"
+      mode: 644
