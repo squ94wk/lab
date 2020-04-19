@@ -9,10 +9,10 @@
     dest: "vms/{{ item.role }}-{{ item.id }}.config"
   with_items: "{{ vms }}"
 
-- name: Create VM ignition yaml files
+- name: Create VM cloud-init yaml files
   template:
-    src: templates/vm.ign
-    dest: "vms/{{ item.role }}-{{ item.id }}.yml.ign"
+    src: templates/vm.cloud-init.yml
+    dest: "vms/{{ item.role }}-{{ item.id }}.cloud-init.yml"
   with_items: "{{ vms }}"
   register: ignition
 
@@ -22,14 +22,13 @@
     name: squawk
   register: user
 
-- name: Transpile VM ignition files
+- name: Create iso from VM cloud-init yml files
   command:
     cmd: |
       docker run --rm -i
       --user {{ user.uid }}
-      -v ${PWD}:/fcos --workdir /fcos
-      fcct --pretty --strict -o vms/{{ item.role }}-{{ item.id }}.ign
-    stdin: "{{ lookup( 'file', 'vms/' + item.role + '-' + (item.id | string) + '.yml.ign' ) }}"
+      -v ${PWD}:/work --workdir /work
+      cloud-utils:centos-7 cloud-localds vms/{{ item.role }}-{{ item.id }}.cloud-init.img vms/{{ item.role }}-{{ item.id }}.cloud-init.yml
   with_items: "{{ vms }}"
   when: "ignition.changed"
 

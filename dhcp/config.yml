@@ -1,0 +1,9 @@
+server4:
+  listen: "0.0.0.0:67"
+  interface: "k8s"
+  plugins:
+    - lease_time: 60s
+    - server_id: "10.16.0.1"
+    - router: "10.16.0.1"
+    - netmask: "255.255.0.0"
+    - range: "leases.txt 10.16.0.2 10.16.255.254 60s"
