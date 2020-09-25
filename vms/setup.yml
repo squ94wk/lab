@@ -1,0 +1,5 @@
+- hosts: server
+  roles:
+    - name: 05_machine
+      become: yes
+#      tags: image
