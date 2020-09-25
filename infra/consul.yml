@@ -1,0 +1,3 @@
+- hosts: consul_server
+  roles:
+    - name: 02_consul_server
