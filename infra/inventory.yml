@@ -5,9 +5,20 @@ all:
       ansible_host: 192.168.2.25
       ansible_python_interpreter: /usr/bin/python3
       ansible_user: pi
+  vars:
+    dns:
+      domain: home.local.
+      records:
+        - type: A
+          host: ns1
+          ip: 192.168.2.25
 
 consul:
   hosts:
     zero:
       <<: *zero
 
+dns:
+  hosts:
+    zero:
+      <<: *zero

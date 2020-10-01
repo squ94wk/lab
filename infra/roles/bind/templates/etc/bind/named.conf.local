@@ -1,0 +1,6 @@
+zone "home.local" {
+    type master;
+    file "/etc/bind/zones/db.home.local";
+    # for secondary DNS
+    # allow-transfer { 10.128.20.12; };
+};

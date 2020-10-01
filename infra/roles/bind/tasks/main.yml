@@ -1,0 +1,51 @@
+---
+- name: Create bind group
+  become: yes
+  group:
+    name: bind
+
+- name: Create bind user
+  become: yes
+  user:
+    name: bind
+    group: bind
+    create_home: no
+
+- name: Install bind
+  become: yes
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - bind9
+    - bind9utils
+
+- name: Prepare directories
+  become: yes
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: bind
+    group: bind
+  with_items:
+    - /etc/bind
+    - /var/cache/bind
+    - /etc/bind/zones
+
+- name: Copy config files
+  become: yes
+  template:
+    src: "{{ item.src }}"
+    dest: /etc/{{ item.path }}
+    owner: bind
+    group: bind
+  with_community.general.filetree: templates/etc
+  when: item.state == "file"
+
+- name: Enable bind service
+  become: yes
+  service:
+    name: bind9
+    enabled: true
+    daemon_reload: yes
+    state: restarted

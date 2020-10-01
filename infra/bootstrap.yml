@@ -3,3 +3,10 @@
     - name: consul_server
   tags:
     - consul
+
+- hosts: dns
+  roles:
+    - name: bind
+  tags:
+    - dns
+    - bind
