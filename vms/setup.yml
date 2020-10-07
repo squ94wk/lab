@@ -1,5 +1,8 @@
 - hosts: server
   roles:
+    - name: 02_network
+      tags:
+        - network
     - name: 05_machine
       become: yes
 #      tags: image

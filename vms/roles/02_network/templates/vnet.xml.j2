@@ -1,14 +1,13 @@
 #jinja2: lstrip_blocks: "True"
-{%- set network=item -%}
 <network>
     <name>k8s</name>
-    <bridge name="{{ network.name }}"/>
-    {%- for dev in network.forward %}
+    <bridge name="{{ vnet.name }}"/>
+    {% for dev in vnet.forward %}
     <forward mode="route" dev="{{ dev.dev }}"/>
-    {%- endfor %}
-    <ip address="{{ network.ip }}" netmask="{{ network.netmask }}">
+    {% endfor %}
+    <ip address="{{ vnet.ip }}" netmask="{{ vnet.netmask }}">
         <dhcp>
-            <range start="{{ network.dhcp.start }}" end="{{ network.dhcp.end }}"/>
+            <range start="{{ vnet.dhcp.start }}" end="{{ vnet.dhcp.end }}"/>
         </dhcp>
     </ip>
 </network>

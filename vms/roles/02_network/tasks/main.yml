@@ -1,15 +1,6 @@
 ---
-- name: Define vnet
-  command:
-    cmd: |
-      virsh net-define -
-    stdin: "{{ fetch('template', 'templates/vnet.xml.j2') }}"
-  with_items:
-    - "{{ vnets }}"
-
-- name: Start vnet
-  command:
-    cmd: |
-      virsh net-start {{ item.name }}
-  with_items:
-    - "{{ vnets }}"
+- name: Create network
+  include_tasks: vnet.yml
+  loop: "{{ vnets }}"
+  loop_control:
+    loop_var: vnet
