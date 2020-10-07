@@ -46,5 +46,5 @@ local:
           disks:
             - image: master
               size: 10G
-              path: "{{ playbook_dir }}/data/vm/master-0/root.qcow2"
+              path: "{{ playbook_dir }}/data/vms/master-0/root.qcow2"
           cloud_init: {}

@@ -12,5 +12,6 @@
         - cloud_init
         - cloudinit
     - name: 05_machine
-      become: yes
-#      tags: image
+      tags:
+        - machine
+        - vm

@@ -8,33 +8,32 @@
     loop_var: disk
 
 - name: Template XML
-  command:
+  shell:
     cmd: |
       virt-install \
-      -n {{ vm.name }} \
+      -n {{ vm.hostname }} \
       --description "{{ vm.description }}" \
       --os-type=Linux \
       --os-variant={{ vm.os }} \
       --ram={{ vm.resources.ram }} \
-      --vcpus={{ vm.resources.cpu }}
-      --disk path={{ playbook_dir }}/data/vm/{{ vm.name }}/cloudinit.qcow2,device=cdrom \
-      {%- for disk in vm.disks %}
+      --vcpus={{ vm.resources.cpu }} \
+      {% for disk in vm.disks %}
       --disk path={{ disk.path }},device=disk \
-      {%- endfor %}
+      {% endfor %}
+      --disk path={{ playbook_dir }}/data/vms/{{ vm.hostname }}/cloud-init.qcow2,device=cdrom \
       --boot hd \
       --graphics none \
-      {%- for network in vm.networks %}
+      {% for network in vm.networks %}
       --network network={{ network }} \
-      {%- endfor %}
-      --print-xml
+      {% endfor %}
+      --print-xml > {{ playbook_dir }}/data/vms/{{ vm.hostname }}/vm.xml
   register: vm_xml
 
 - debug:
     msg: "{{ vm_xml }}"
-- fail:
 
 - name: Define VM
+  become: yes
   command:
     cmd: |
-      virsh define -
-    stdin: "{{ vm_xml }}"
+      virsh define {{ playbook_dir }}/data/vms/{{ vm.hostname }}/vm.xml
