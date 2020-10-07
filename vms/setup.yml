@@ -7,6 +7,10 @@
       tags:
         - storage
         - image
+    - name: 04_cloudinit
+      tags:
+        - cloud_init
+        - cloudinit
     - name: 05_machine
       become: yes
 #      tags: image

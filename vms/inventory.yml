@@ -29,8 +29,13 @@ local:
           dhcp:
             start: 10.16.1.2
             end: 10.16.1.254
+      dns:
+        zone: home.local
+      admin:
+        password: admin
+        public_key: "{{ lookup('file', 'data/ssh.pub') }}"
       vms:
-        - name: master-0
+        - hostname: master-0
           description: "K8s master node 0"
           os: ubuntu20.04
           resources:

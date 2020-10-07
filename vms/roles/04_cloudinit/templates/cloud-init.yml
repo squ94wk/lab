@@ -1,0 +1,37 @@
+#cloud-config
+hostname: "{{ vm.hostname }}"
+fqdn: "{{ vm.hostname }}.{{ dns.zone }}"
+manage_etc_hosts: true
+users:
+  - name: ubuntu
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: users, admin
+    home: /home/ubuntu
+    shell: /bin/bash
+    lock_passwd: false
+    ssh-authorized-keys:
+      - "{{ admin.public_key }}"
+# only key auth via ssh (console access can still login)
+ssh_pwauth: false
+disable_root: false
+chpasswd:
+  list: |
+    ubuntu:{{ admin.password }}
+  expire: False
+packages:
+  - qemu-guest-agent
+# written to /var/log/cloud-init-output.log
+
+write_files:
+  - path: /etc/consul.d/consul.hcl
+    content: |
+      {{ lookup('template', 'templates/consul.hcl.j2') | indent(6) }}
+    owner: root:root
+    mode: 0644
+
+runcmd:
+  - ["systemctl", "daemon-reload"]
+  - ["systemctl", "enable", "consul.service"]
+  - ["systemctl", "start", "--no-block", "consul.service"]
+
+final_message: "Finish init after $UPTIME seconds"
