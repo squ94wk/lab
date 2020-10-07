@@ -1,5 +1,9 @@
 ---
 local:
+  vars:
+    apps:
+      consul:
+        url: https://releases.hashicorp.com/consul/1.8.4/consul_1.8.4_linux_amd64.zip
   hosts:
     server:
       ansible_connection: local
@@ -7,13 +11,15 @@ local:
       images:
         ubuntu:
           path: "{{ playbook_dir }}/data/images/ubuntu_20.04.img"
-          url: https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-disk-kvm.img
+          url: https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
+        ubuntu18.04:
+          path: "{{ playbook_dir }}/data/images/ubuntu_18.04.img"
+          url: https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img
         master:
           base: ubuntu
           path: "{{ playbook_dir }}/data/images/ubuntu_20.04_consul.img"
           add:
-            - consul:
-                url: https://releases.hashicorp.com/consul/1.8.4/consul_1.8.4_linux_amd64.zip
+            - consul
       vnets:
         - name: k8s
           forward:

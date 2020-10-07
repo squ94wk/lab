@@ -1,68 +1,15 @@
----
 - name: download base image
   command:
     cmd: |
-      curl {{ image.base.url }} -o {{ image.base.dest }}
+      curl {{ item.value.url }} -o {{ item.value.path }}
     warn: false
-    creates: "{{ image.base.dest }}"
+    creates: "{{ item.value.path }}"
+  with_dict: "{{ images }}"
+  when: item.value.base is not defined
 
-- name: add consul binary
-  block:
-    - name: create tmp dir
-      tempfile:
-        state: directory
-      register: consul_tmp_dir
-    - set_fact:
-        consul_tmp_dir: "{{ consul_tmp_dir.path }}"
-    - debug:
-        msg: "{{ consul_tmp_dir }}"
-    - name: download consul
-      command:
-        cmd: |
-          curl {{ image.consul.url }} -o {{ consul_tmp_dir }}/consul.zip
-        warn: false
-        creates: "{{ consul_tmp_dir }}/consul.zip"
-    - name: unzip
-      unarchive:
-        src: "{{ consul_tmp_dir }}/consul.zip"
-        remote_src: yes
-        dest: "{{ consul_tmp_dir }}"
-    - name: add consul to image
-      block:
-        - name: create mount point dir
-          file:
-            dest: "{{ consul_tmp_dir }}/root"
-            state: directory
-        - name: convert base image to raw
-          command:
-            cmd: |
-              qemu-img convert -O raw {{ image.base.dest }} {{ consul_tmp_dir }}/image.raw
-        - name: find first sector
-          parted:
-            state: info
-            device: "{{ consul_tmp_dir }}/image.raw"
-            unit: B
-          register: partition_info
-        - set_fact:
-            partition: "{{ partition_info.partitions | sort(attribute='size') | last }}"
-        - debug:
-            msg: "{{ partition }}"
-#        - fail: {}
-        - name: mount image
-          become: yes
-          mount:
-            src: "{{ consul_tmp_dir }}/image.raw"
-            path: "{{ consul_tmp_dir }}/root"
-            fstype: "{{ partition.fstype }}"
-            opts: "loop,offset={{ partition.begin | int }}"
-            state: mounted
-        - name: copy consul binary
-          copy:
-            src: "{{ consul_tmp_dir }}/consul"
-            remote_src: yes
-            dest: "{{ consul_tmp_dir }}/root/usr/bin/consul"
-        - name: un-mount image
-          become: yes
-          mount:
-            path: "{{ consul_tmp_dir }}/root"
-            state: unmounted
+- name: Build image
+  include_tasks: consul.yml
+  with_dict: "{{ images }}"
+  vars:
+    image: "{{ item.value }}"
+  when: "item.value.base is defined and 'consul' in item.value.add"
