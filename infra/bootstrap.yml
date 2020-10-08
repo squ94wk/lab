@@ -1,6 +1,6 @@
 - hosts: consul
   roles:
-    - name: consul_server
+    - name: consul
   tags:
     - consul
 
