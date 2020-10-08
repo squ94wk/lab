@@ -20,7 +20,7 @@
   become: yes
   copy:
     src: files/consul_{{ ansible_architecture }}
-    dest: /usr/local/bin/consul
+    dest: /usr/bin/consul
     mode: 0755
 
 - name: Prepare directories
