@@ -15,7 +15,6 @@ options {
     allow-transfer { none; };
 
     forwarders {
-            127.0.0.1 port 8600;
             8.8.8.8;
             8.8.4.4;
             1.1.1.1;

@@ -7,11 +7,21 @@ all:
       ansible_user: pi
   vars:
     dns:
-      domain: home.local.
-      records:
-        - type: A
-          host: ns1
-          ip: 192.168.2.25
+      zones:
+        - domain: home.local
+          records:
+            - type: NS
+              name: "@"
+              data: ns1.home.local.
+            - type: A
+              name: ns1
+              data: 192.168.2.25
+            - type: A
+              name: server
+              data: 192.168.2.11
+            - type: A
+              name: consul
+              data: 192.168.2.25
 
 consul:
   hosts:
