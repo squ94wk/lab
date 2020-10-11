@@ -1,7 +1,34 @@
 ---
-consul_server:
+all:
   hosts:
-    zero:
+    zero: &zero
       ansible_host: 192.168.2.25
       ansible_python_interpreter: /usr/bin/python3
       ansible_user: pi
+  vars:
+    dns:
+      zones:
+        - domain: home
+          records:
+            - type: NS
+              name: "@"
+              data: ns1.home.
+            - type: A
+              name: ns1
+              data: 192.168.2.25
+            - type: A
+              name: server
+              data: 192.168.2.11
+            - type: A
+              name: consul
+              data: 192.168.2.25
+
+consul:
+  hosts:
+    zero:
+      <<: *zero
+
+dns:
+  hosts:
+    zero:
+      <<: *zero

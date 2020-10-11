@@ -1,0 +1,6 @@
+---
+- name: Create network
+  include_tasks: vnet.yml
+  loop: "{{ vnets }}"
+  loop_control:
+    loop_var: vnet

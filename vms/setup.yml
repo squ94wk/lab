@@ -1,0 +1,17 @@
+- hosts: server
+  roles:
+    - name: 02_network
+      tags:
+        - network
+    - name: 03_storage
+      tags:
+        - storage
+        - image
+    - name: 04_cloudinit
+      tags:
+        - cloud_init
+        - cloudinit
+    - name: 05_machine
+      tags:
+        - machine
+        - vm

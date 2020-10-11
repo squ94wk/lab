@@ -1,0 +1,15 @@
+- name: download base image
+  command:
+    cmd: |
+      curl {{ item.value.url }} -o {{ item.value.path }}
+    warn: false
+    creates: "{{ item.value.path }}"
+  with_dict: "{{ images }}"
+  when: item.value.base is not defined
+
+- name: Build image
+  include_tasks: consul.yml
+  with_dict: "{{ images }}"
+  vars:
+    image: "{{ item.value }}"
+  when: "item.value.base is defined and 'consul' in item.value.add"

@@ -1,0 +1,18 @@
+---
+- name: Render network XML
+  template:
+    src: templates/vnet.xml.j2
+    dest: "{{ playbook_dir }}/data/networks/{{ vnet.name }}.xml"
+  register: vnet_xml
+
+- name: Define vnet
+  become: yes
+  command:
+    cmd: |
+      virsh net-define {{ vnet_xml.dest }}
+
+- name: Start vnet
+  become: yes
+  command:
+    cmd: |
+      virsh net-start {{ vnet.name }}

@@ -1,0 +1,12 @@
+{% set zone = dns.zones | selectattr("domain", "equalto", "home") | first %}
+$TTL	604800
+@	IN	SOA	ns1.home. admin.home. (
+			      3		; Serial
+			 604800		; Refresh
+			  86400		; Retry
+			2419200		; Expire
+			 604800 )	; Negative Cache TTL
+
+{% for record in zone.records %}
+{{ record.name }}        IN      {{ record.type }} {{ record.data }}
+{% endfor %}

@@ -1,0 +1,51 @@
+---
+local:
+  vars:
+    apps:
+      consul:
+        url: https://releases.hashicorp.com/consul/1.8.4/consul_1.8.4_linux_amd64.zip
+  hosts:
+    server:
+      ansible_connection: local
+#      ansible_host: server
+      images:
+        ubuntu:
+          path: "{{ playbook_dir }}/data/images/ubuntu_20.04.img"
+          url: https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
+        ubuntu18.04:
+          path: "{{ playbook_dir }}/data/images/ubuntu_18.04.img"
+          url: https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img
+        master:
+          base: ubuntu
+          path: "{{ playbook_dir }}/data/images/ubuntu_20.04_consul.img"
+          add:
+            - consul
+      vnets:
+        - name: k8s
+          dns_server: 192.168.2.25
+          forward:
+            - dev: wlp4s0
+          ip: 10.16.1.1
+          netmask: 255.255.0.0
+          dhcp:
+            start: 10.16.1.2
+            end: 10.16.1.254
+      dns:
+        zone: home
+      admin:
+        password: admin
+        public_key: "{{ lookup('file', 'data/ssh.pub') }}"
+      vms:
+        - hostname: master-0
+          description: "K8s master node 0"
+          os: ubuntu20.04
+          resources:
+            cpu: 2
+            ram: 2048
+          networks:
+            - k8s
+          disks:
+            - image: master
+              size: 10G
+              path: "{{ playbook_dir }}/data/vms/master-0/root.qcow2"
+          cloud_init: {}

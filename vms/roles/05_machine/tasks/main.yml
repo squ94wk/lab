@@ -1,0 +1,6 @@
+---
+- name: Define VMs
+  include_tasks: vm.yml
+  loop: "{{ vms }}"
+  loop_control:
+    loop_var: vm

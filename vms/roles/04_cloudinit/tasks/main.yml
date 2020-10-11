@@ -1,0 +1,37 @@
+---
+- name: Create data directory
+  file:
+    state: directory
+    path: "{{ playbook_dir }}/data/vms/{{ vm.hostname }}"
+  loop: "{{ vms }}"
+  loop_control:
+    loop_var: vm
+
+- name: "Template cloud-init.yaml"
+  template:
+    src: templates/cloud-init.yml
+    dest: "{{ playbook_dir }}/data/vms/{{ vm.hostname }}/cloud-init.yml"
+  loop: "{{ vms }}"
+  loop_control:
+    loop_var: vm
+  register: cloud_init
+
+- name: get user id
+  become: yes
+  user:
+    name: "{{ ansible_user }}"
+  register: user
+
+- name: "Create iso from VM cloud-init.yml files"
+  docker_container:
+    name: cloud-utils
+    image: cloud-utils:centos-7
+    auto_remove: yes
+    volumes:
+      - "{{ cloud_init.results[0].dest | dirname }}:/work"
+    working_dir: /work
+    command: |
+       cloud-localds ./cloud-init.qcow2 ./cloud-init.yml
+  loop: "{{ vms }}"
+  loop_control:
+    loop_var: vm

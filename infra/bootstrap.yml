@@ -1,0 +1,12 @@
+- hosts: consul
+  roles:
+    - name: consul
+  tags:
+    - consul
+
+- hosts: dns
+  roles:
+    - name: bind
+  tags:
+    - dns
+    - bind
