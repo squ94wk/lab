@@ -1,2 +1,41 @@
-# K8s the harder way
-This repo seeks to provide a sandbox to learn k8s installation on VMs including automated setup of the necessary VMs and networking using the KVM hypervisor and linux virtual kernel networking.
+# Homelab
+This repo describes my homelab sandbox system(s).
+
+## Content
+The sandbox entails:
+* Infrastructure
+    * DNS Server with `home.` zone
+    * Consul for service discovery and dynamic DNS
+* Hypervisor (KVM)
+    * Automated vnet setup
+    * Automated VM creation & config (virsh + cloud-init)
+    * Automated VM image creation
+        * baked-in Consul client service
+
+## Future
+On the VMs:
+* K8s bootstrapping
+    * VM provisioning
+    * Node discovery with Consul
+    * K8s setup
+* Load-Balancer
+* Distributed storage
+
+K8s sandbox:
+* Monitoring
+* Service Mesh
+
+Infra:
+* Network separation
+* Linux based router & firewall
+* HA
+
+Automation:
+* Replace Ansible with custom controller setup similar how K8s works
+    * State in key-value store (desired, actual state)
+    * Network management
+    * VM management
+        * Networks
+        * Disks
+    * "Managed" K8s service
+    * Autoscaling
