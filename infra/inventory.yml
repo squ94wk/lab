@@ -8,11 +8,11 @@ all:
   vars:
     dns:
       zones:
-        - domain: home.local
+        - domain: home
           records:
             - type: NS
               name: "@"
-              data: ns1.home.local.
+              data: ns1.home.
             - type: A
               name: ns1
               data: 192.168.2.25

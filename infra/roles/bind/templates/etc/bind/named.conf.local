@@ -7,7 +7,7 @@ zone "{{ zone.domain }}" {
 };
 {% endfor %}
 
-zone "consul.local" {
+zone "consul.home" {
     type forward;
     forward only;
     forwarders { 127.0.0.1 port 8600; };

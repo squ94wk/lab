@@ -1,6 +1,6 @@
-{% set zone = dns.zones | selectattr("domain", "equalto", "home.local") | first %}
+{% set zone = dns.zones | selectattr("domain", "equalto", "home") | first %}
 $TTL	604800
-@	IN	SOA	ns1.home.local. admin.home.local. (
+@	IN	SOA	ns1.home. admin.home. (
 			      3		; Serial
 			 604800		; Refresh
 			  86400		; Retry

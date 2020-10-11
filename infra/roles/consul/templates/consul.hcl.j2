@@ -13,4 +13,4 @@ data_dir = "/opt/consul"
 //verify_server_hostname = true
 ui = true
 client_addr = "0.0.0.0"
-domain = "{{ dns.zones | selectattr('domain', 'equalto', 'consul.home') }}"
+domain = "consul.home"

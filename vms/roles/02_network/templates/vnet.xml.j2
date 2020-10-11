@@ -5,6 +5,9 @@
     {% for dev in vnet.forward %}
     <forward mode="route" dev="{{ dev.dev }}"/>
     {% endfor %}
+    <dns>
+        <forwarder addr="{{ vnet.dns_server }}"/>
+    </dns>
     <ip address="{{ vnet.ip }}" netmask="{{ vnet.netmask }}">
         <dhcp>
             <range start="{{ vnet.dhcp.start }}" end="{{ vnet.dhcp.end }}"/>
