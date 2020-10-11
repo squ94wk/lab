@@ -40,7 +40,7 @@ local:
           description: "K8s master node 0"
           os: ubuntu20.04
           resources:
-            cpu: 1
+            cpu: 2
             ram: 2048
           networks:
             - k8s
