@@ -10,7 +10,6 @@
   command:
     cmd: |
       virsh net-define {{ vnet_xml.dest }}
-  when: vnet_xml.changed
 
 - name: Start vnet
   become: yes
