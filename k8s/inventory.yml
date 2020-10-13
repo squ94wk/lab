@@ -1,0 +1,11 @@
+---
+k8s:
+  vars:
+    k8s:
+      cri: containerd
+      pod_cidr: 10.10.0.0/16
+  hosts:
+    master-0:
+      ansible_host: master-0.service.consul.home
+      ansible_ssh_private_key_file: ../vms/data/ssh
+      ansible_user: ubuntu

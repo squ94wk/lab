@@ -1,0 +1,32 @@
+---
+- name: Init
+  become: yes
+  command:
+    cmd: |
+      kubeadm init --pod-network-cidr {{ k8s.pod_cidr }}
+  register: kubeadm_init
+
+- name: Install CNI plugin
+  become: yes
+  command:
+    cmd: |
+      kubectl --kubeconfig /etc/kubernetes/admin.conf apply -f https://docs.projectcalico.org/manifests/tigera-operator.yaml
+
+- name: Install network CRD
+  become: yes
+  command:
+    cmd: |
+      kubectl --kubeconfig /etc/kubernetes/admin.conf apply -f -
+    stdin: "{{ lookup('template', 'templates/calico.yml.j2') }}"
+
+- name: Wait for Running Pods
+  become: yes
+  command:
+    cmd: |
+      kubectl --kubeconfig /etc/kubernetes/admin.conf wait wait --for=condition=ready -n calico-system --all
+
+- name: Remove taint on node
+  become: yes
+  command:
+    cmd: |
+      kubectl --kubeconfig /etc/kubernetes/admin.conf taint nodes --all node-role.kubernetes.io/master-

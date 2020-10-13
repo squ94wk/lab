@@ -1,0 +1,12 @@
+- hosts: k8s
+  roles:
+    - name: 01_system
+      tags:
+        - system
+    - name: 02_cri
+      tags:
+        - cri
+    - name: 03_k8s
+      tags:
+        - kube
+        - k8s

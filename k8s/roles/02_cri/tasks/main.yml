@@ -1,0 +1,4 @@
+---
+- name: Install containerd
+  include_tasks: containerd.yml
+  when: k8s.cri == "containerd"
