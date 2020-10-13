@@ -13,6 +13,9 @@ all:
             - type: NS
               name: "@"
               data: ns1.home.
+            - type: NS
+              name: "consul"
+              data: consul.home.
             - type: A
               name: ns1
               data: 192.168.2.25
