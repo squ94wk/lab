@@ -13,18 +13,12 @@ all:
             - type: NS
               name: "@"
               data: ns1.home.
-            - type: NS
-              name: "consul"
-              data: consul.home.
             - type: A
               name: ns1
               data: 192.168.2.25
             - type: A
               name: server
               data: 192.168.2.11
-            - type: A
-              name: consul
-              data: 192.168.2.25
 
 consul:
   hosts:
