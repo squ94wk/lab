@@ -24,7 +24,7 @@
     - name: Add apt repository
       apt_repository:
         repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ dist_info.stdout }} stable
-        update_cache: no
+        update_cache: yes
 
     - name: Install containerd
       apt:
