@@ -1,5 +1,6 @@
 ---
 - name: Create disk(s)
+  become: yes
   command:
     cmd: |
       qemu-img create -f qcow2 -b {{ images[disk.image].path }} {{ disk.path }} {{ disk.size }}

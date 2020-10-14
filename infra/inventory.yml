@@ -3,7 +3,7 @@ all:
   hosts:
     zero: &zero
       ansible_host: 192.168.2.25
-      ansible_python_interpreter: /usr/bin/python3
+      ansible_python_interpreter: "/usr/bin/env python3"
       ansible_user: pi
   vars:
     dns:
