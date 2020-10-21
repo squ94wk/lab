@@ -1,4 +1,5 @@
 {% set zone = dns.zones | selectattr("domain", "equalto", "home") | first %}
+$ORIGIN home.
 $TTL	604800
 @	IN	SOA	ns1.home. admin.home. (
 			      3		; Serial

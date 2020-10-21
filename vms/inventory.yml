@@ -49,3 +49,16 @@ local:
               size: 10G
               path: "{{ playbook_dir }}/data/vms/master-0/root.qcow2"
           cloud_init: {}
+        - hostname: master-1
+          description: "K8s master node 1"
+          os: ubuntu20.04
+          resources:
+            cpu: 2
+            ram: 2048
+          networks:
+            - k8s
+          disks:
+            - image: master
+              size: 10G
+              path: "{{ playbook_dir }}/data/vms/master-1/root.qcow2"
+          cloud_init: {}

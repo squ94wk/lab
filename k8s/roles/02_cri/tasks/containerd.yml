@@ -1,0 +1,60 @@
+---
+- name: Install containerd
+  become: yes
+  block:
+    - name: Install dependencies
+      apt:
+        state: present
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+
+    - name: Add apt gpg key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+
+    - name: Get dist info
+      command:
+        cmd: |
+          lsb_release -cs
+      register: dist_info
+
+    - name: Add apt repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ dist_info.stdout }} stable
+        update_cache: yes
+
+    - name: Install containerd
+      apt:
+        name: containerd.io
+        state: present
+        update_cache: yes
+
+- name: Set containerd defaults
+  become: yes
+  block:
+    - name: get defaults
+      become: yes
+      command:
+        cmd: |
+          containerd config default
+      register: containerd_defaults
+
+    - name: Create directory
+      file:
+        path: /etc/containerd
+        state: directory
+
+    - name: Save default
+      copy:
+        dest: /etc/containerd/config.toml
+        content: "{{ containerd_defaults.stdout }}"
+
+- name: Restart containerd service
+  become: yes
+  systemd:
+    name: containerd
+    daemon_reload: yes
+    state: restarted

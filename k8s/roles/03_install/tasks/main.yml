@@ -1,0 +1,22 @@
+---
+- name: Add apt gpg key
+  become: yes
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: Add apt repository
+  become: yes
+  apt_repository:
+    repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+    update_cache: no
+
+- name: Install
+  become: yes
+  apt:
+    name:
+      - kubelet
+      - kubectl
+      - kubeadm
+    state: present
+    update_cache: yes

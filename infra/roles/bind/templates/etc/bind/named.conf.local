@@ -2,12 +2,10 @@
 zone "{{ zone.domain }}" {
     type master;
     file "/etc/bind/zones/db.{{ zone. domain }}";
-    # for secondary DNS
-    # allow-transfer { 10.128.20.12; };
 };
 {% endfor %}
 
-zone "consul.home" {
+zone "consul" {
     type forward;
     forward only;
     forwarders { 127.0.0.1 port 8600; };
