@@ -1,4 +1,4 @@
-- hosts: k8s
+- hosts: all
   roles:
     - name: 01_system
       tags:
@@ -6,7 +6,18 @@
     - name: 02_cri
       tags:
         - cri
-    - name: 03_k8s
+    - name: 03_install
       tags:
-        - kube
-        - k8s
+        - install
+
+- hosts: init
+  roles:
+    - name: 04_init
+      tags:
+        - init
+
+- hosts: joining
+  roles:
+    - name: 05_join
+      tags:
+        - join

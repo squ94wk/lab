@@ -1,0 +1,6 @@
+---
+- name: Join
+  become: yes
+  command:
+    cmd: |
+      kubeadm join --token {{ k8s.bootstrap_token }} --discovery-token-unsafe-skip-ca-verification {{ k8s.join_addr }}
