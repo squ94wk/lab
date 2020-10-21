@@ -11,13 +11,14 @@ The sandbox entails:
     * Automated VM creation & config (virsh + cloud-init)
     * Automated VM image creation
         * baked-in Consul client service
-
-## Future
 On the VMs:
 * K8s bootstrapping
     * VM provisioning
     * Node discovery with Consul
     * K8s setup
+
+## Future
+On the VMs:
 * Load-Balancer
 * Distributed storage
 
