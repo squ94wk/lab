@@ -42,6 +42,13 @@
   with_community.general.filetree: templates/etc
   when: item.state == "file"
 
+- name: Disable resolved
+  become: yes
+  lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: "^#?DNSStubListener="
+    line: "DNSStubListener=no"
+
 - name: Enable bind service
   become: yes
   service:
