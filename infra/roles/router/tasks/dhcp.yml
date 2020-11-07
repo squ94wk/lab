@@ -1,0 +1,26 @@
+---
+- name: Install DHCP
+  become: yes
+  package:
+    name: isc-dhcp-server
+    update_cache: yes
+    install_recommends: no
+  ignore_errors: yes
+
+- name: Set interfaces to listen on
+  become: yes
+  copy:
+    content: |
+      INTERFACES="{{ 'wlan0 ' if mgt_ap.enabled }}{{ vlans | selectattr('dhcp', 'defined') | map(attribute='name') | join(' ') }}"
+    dest: /etc/default/isc-dhcp-server
+
+- name: Configure DHCP
+  become: yes
+  template:
+    src: templates/etc/dhcpd.conf.j2
+    dest: /etc/dhcp/dhcpd.conf
+
+- name: Enable DHCP
+  systemd:
+    name: isc-dhcp-server
+    enabled: yes

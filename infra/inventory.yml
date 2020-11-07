@@ -1,10 +1,18 @@
 ---
 all:
   hosts:
-    zero: &zero
-      ansible_host: 192.168.2.25
+    router: &router
+      ansible_host: 192.168.20.1
       ansible_python_interpreter: "/usr/bin/env python3"
-      ansible_user: pi
+      ansible_user: ubuntu
+
+consul:
+  hosts: {}
+
+dns:
+  hosts:
+    router:
+      <<: *router
   vars:
     dns:
       zones:
@@ -16,16 +24,86 @@ all:
             - type: A
               name: ns1
               data: 192.168.2.25
-            - type: A
-              name: server
-              data: 192.168.2.11
+      secret: dns
 
-consul:
+router:
   hosts:
-    zero:
-      <<: *zero
-
-dns:
-  hosts:
-    zero:
-      <<: *zero
+    router:
+      <<: *router
+  vars:
+    default_dns: 1.1.1.1
+    vlans:
+      # wan
+      - name: wan
+        vlan_id: 10
+        network_cidr: 192.168.10.0
+        broadcast_address: 192.168.10.255
+        ip: 192.168.10.1
+        priority: 10
+        custom_network: |
+          [Network]
+          DHCP=yes
+      # mgt
+      - name: mgt
+        vlan_id: 20
+        network_cidr: 192.168.20.0
+        broadcast_address: 192.168.20.255
+        ip: 192.168.20.1
+        dhcp:
+          from: 192.168.20.10
+          to: 192.168.20.254
+        priority: 20
+      # home
+      - name: home
+        vlan_id: 30
+        network_cidr: 192.168.30.0
+        broadcast_address: 192.168.30.255
+        ip: 192.168.30.1
+        dhcp:
+          from: 192.168.30.10
+          to: 192.168.30.254
+        priority: 30
+      # guest
+      - name: guest
+        vlan_id: 40
+        network_cidr: 192.168.40.0
+        broadcast_address: 192.168.40.255
+        ip: 192.168.40.1
+        dhcp:
+          from: 192.168.40.10
+          to: 192.168.40.254
+        priority: 40
+      # cloud
+      - name: cloud
+        vlan_id: 100
+        network_cidr: 10.100.0.0
+        broadcast_address: 10.100.255.255
+        ip: 10.100.0.1
+        dhcp:
+          from: 10.100.0.10
+          to: 10.100.255.254
+        subnet_mask: 255.255.0.0
+        prefix_length: 16
+        priority: 50
+      # anonymous
+      - name: anonymous
+        vlan_id: 200
+        network_cidr: 192.168.200.0
+        broadcast_address: 192.168.200.255
+        ip: 192.168.200.1
+        dhcp:
+          from: 192.168.200.10
+          to: 192.168.200.254
+        priority: 99
+    mgt_ap:
+      enabled: false
+      priority: "01"
+      ip: 192.168.0.1
+      network_cidr: 192.168.0.0
+      subnet_mask: 255.255.255.0
+      broadcast_address: 192.168.0.255
+      dhcp:
+        from: 192.168.0.10
+        to: 192.168.0.254
+      ssid: Weds Mgt
+      password: upn0823rclkwr7ipbsierjc

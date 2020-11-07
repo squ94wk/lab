@@ -1,0 +1,108 @@
+#!/usr/sbin/nft -f
+# See https://wiki.nftables.org/wiki-nftables/index.php/Simple_ruleset_for_a_server
+
+flush ruleset
+
+define INTERNAL_IPS = {
+    {% for vlan in vlans %}
+    {{ vlan.network_cidr }}/{{ vlan.prefix_length | default('24') }}{{ ',' if not loop.last }}
+    {% endfor %}
+}
+
+define MGT_IPS = {
+    {{ vlans | selectattr('name', 'equalto', 'mgt') | map(attribute='network_cidr') | join(',\n') | indent(4) }}
+}
+
+define DHCP_IFACES = {
+    {{ vlans | map(attribute='name') | join(',\n') | indent(4) }}
+}
+
+table inet firewall {
+
+    chain ingress {
+
+        # Drop ingress by default
+        type filter hook input priority 0; policy drop;
+
+        iifname wlan0 accept
+
+        # Allow traffic from established and related packets
+        ct state established,related accept
+
+        # Drop invalid packets
+        ct state invalid drop
+
+        # Allow loopback traffic
+        iifname lo accept
+
+        # Allow ingress from mgt VLAN
+        iifname mgt accept
+
+        # Allow all ICMP and IGMP traffic, but enforce a rate limit
+        # to help prevent some types of flood attacks
+        ip protocol icmp limit rate 4/second accept
+        ip6 nexthdr ipv6-icmp limit rate 4/second accept
+        ip protocol igmp limit rate 4/second accept
+
+        # Allow SSH on port 22
+        {% if mgt_ap.enabled %}
+        tcp dport 22 iifname wlan0 accept
+        {% endif %}
+
+        # Allow DHCP, DNS in LAN
+        udp dport 53 ip saddr $INTERNAL_IPS accept
+        udp dport 68 iifname $DHCP_IFACES accept
+
+        # Log denied ingress
+        log prefix "[nftables] Ingress Denied: " flags all counter drop
+
+    }
+
+    chain forward {
+
+        # Drop by default
+        type filter hook forward priority 0; policy drop;
+
+        # don't broadcast across domains
+        pkttype broadcast drop
+
+        # Accept forward of ingress (after accepted INPUT)
+        iifname wan accept
+
+        # Accept forward of egress
+        oifname wan accept
+
+        {% if mgt_ap.enabled %}
+        iifname wlan0 accept
+        {% endif %}
+
+        # Accept forwarding between VLANs
+        # Forward everything from mgt
+        iifname mgt accept
+        oifname mgt ct state established,related accept
+
+        # Log denied forwards
+        log prefix "[nftables] Forward Denied: " flags all counter drop
+
+    }
+
+    chain egress {
+
+        # Allow all egress
+        type filter hook output priority 0; policy accept;
+
+    }
+
+}
+
+table inet nat {
+
+    chain postrouting {
+
+        type nat hook postrouting priority 100;
+
+        oifname wan masquerade
+
+    }
+
+}

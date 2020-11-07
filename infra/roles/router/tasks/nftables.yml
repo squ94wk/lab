@@ -1,0 +1,20 @@
+---
+- name: Install
+  become: yes
+  package:
+    name: nftables
+    state: present
+    install_recommends: no
+    update_cache: yes
+
+- name: Configure firewall rules
+  become: yes
+  template:
+    src: templates/etc/nftables.conf.j2
+    dest: /etc/nftables.conf
+
+- name: Enable service
+  become: yes
+  service:
+    name: nftables
+    enabled: yes

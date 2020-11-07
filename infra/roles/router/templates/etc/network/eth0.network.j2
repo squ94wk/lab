@@ -1,0 +1,7 @@
+[Match]
+Name=eth0
+
+[Network]
+{% for vlan in vlans %}
+VLAN={{ vlan.name }}
+{% endfor %}

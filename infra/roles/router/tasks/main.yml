@@ -1,0 +1,13 @@
+---
+- name: Set up interfaces
+  include_tasks: interfaces.yml
+
+- name: DHCP
+  include_tasks: dhcp.yml
+
+- name: Management AP
+  include_tasks: mgt_ap.yml
+  when: mgt_ap.enabled
+
+- name: Set up firewall rules
+  include_tasks: nftables.yml

@@ -1,0 +1,12 @@
+[Match]
+Name=wlan0
+
+[Network]
+DHCP=no
+
+[Link]
+Unmanaged={{ 'no' if mgt_ap.enabled else 'yes' }}
+RequiredForOnline=no
+
+[Address]
+Address={{ mgt_ap.ip }}/24

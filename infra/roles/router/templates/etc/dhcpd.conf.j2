@@ -1,0 +1,29 @@
+authoritative;
+
+default-lease-time 600;
+max-lease-time 7200;
+
+{% if mgt_ap.enabled %}
+subnet {{ mgt_ap.network_cidr }} netmask {{ mgt_ap.subnet_mask }} {
+  option subnet-mask {{ mgt_ap.subnet_mask }};
+  range {{ mgt_ap.dhcp.from }} {{ mgt_ap.dhcp.to }};
+
+  option subnet-mask {{ mgt_ap.subnet_mask }};
+  option broadcast-address {{ mgt_ap.broadcast_address }};
+  option routers {{ mgt_ap.ip }};
+  option domain-name-servers {{ mgt_ap.ip }}, {{ default_dns }};
+}
+{% endif %}
+
+{% for vlan in vlans | selectattr('dhcp', 'defined') %}
+subnet {{ vlan.network_cidr }} netmask {{ vlan.subnet_mask | default('255.255.255.0') }} {
+  option subnet-mask {{ vlan.subnet_mask | default('255.255.255.0') }};
+  range {{ vlan.dhcp.from }} {{ vlan.dhcp.to }};
+
+  option subnet-mask {{ vlan.subnet_mask | default('255.255.255.0') }};
+  option broadcast-address {{ vlan.broadcast_address }};
+  option routers {{ vlan.ip }};
+  option domain-name-servers {{ vlan.ip }}, {{ default_dns }};
+}
+
+{% endfor %}

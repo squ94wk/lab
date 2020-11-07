@@ -1,0 +1,13 @@
+[Match]
+Name={{ vlan.name }}
+
+{% if vlan.custom_network is defined %}
+{{ vlan.custom_network }}
+{% else %}
+[Address]
+Address={{ vlan.ip }}/{{ vlan.prefix_length | default('24') }}
+
+[Route]
+Gateway={{ vlan.ip }}
+Destination={{ vlan.network_cidr }}/{{ vlan.prefix_length | default('24') }}
+{% endif %}

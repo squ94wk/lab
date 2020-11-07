@@ -1,6 +1,8 @@
 acl "trusted" {
         127.0.0.1;
-        0.0.0.0/0;
+        {% for vlan in vlans %}
+        {{ vlan.network_cidr }};
+        {% endfor %}
 };
 
 options {
@@ -10,7 +12,9 @@ options {
     allow-recursion { trusted; };
     listen-on {
             127.0.0.1;
-            {{ ansible_default_ipv4.address }};
+            {% for vlan in vlans %}
+            {{ vlan.ip }};
+            {% endfor %}
     };
     allow-transfer { none; };
 
