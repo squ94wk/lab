@@ -14,3 +14,10 @@ data_dir = "{{ consul_data_dir }}"
 ui = true
 client_addr = "0.0.0.0"
 domain = "consul"
+
+dns_config {
+  service_ttl {
+    "*" = "1s"
+  },
+  node_ttl = "1s",
+}
