@@ -11,3 +11,6 @@
 
 - name: Set up firewall rules
   include_tasks: nftables.yml
+
+- name: Setup Traffic Control
+  include_tasks: qos.yml
