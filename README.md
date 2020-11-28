@@ -4,6 +4,7 @@ This repo describes my homelab sandbox system(s).
 ## Content
 The sandbox entails:
 * Infrastructure
+    * Linux based router
     * DNS Server with `home.` zone
     * Consul for service discovery and dynamic DNS
 * Hypervisor (KVM)
@@ -28,7 +29,6 @@ K8s sandbox:
 
 Infra:
 * Network separation
-* Linux based router & firewall
 * HA
 
 Automation:
