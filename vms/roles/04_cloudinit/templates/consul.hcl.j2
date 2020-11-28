@@ -1,3 +1,4 @@
+{% set vnet = vnets | selectattr("name", "equalto", vm.networks[0]) | first %}
 retry_join = ["consul.service.consul"]
 
 //datacenter = "dc1"
@@ -10,6 +11,7 @@ data_dir = "/opt/consul"
 //verify_outgoing = true
 //verify_server_hostname = true
 client_addr = "0.0.0.0"
+bind_addr = "{{ "{{" }} GetPrivateInterfaces | include \"network\" \"{{ vnet.cidr }}\" | attr \"address\" {{ "}}" }}"
 
 service {
   id = "{{ vm.hostname }}"

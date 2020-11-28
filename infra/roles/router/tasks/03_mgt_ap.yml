@@ -1,0 +1,20 @@
+---
+- name: Install hostapd
+  become: yes
+  package:
+    name: hostapd
+    update_cache: yes
+    install_recommends: no
+
+- name: Config ap
+  become: yes
+  template:
+    src: templates/etc/hostapd.conf.j2
+    dest: /etc/hostapd/hostapd.conf
+
+- name: Enable service
+  become: yes
+  systemd:
+    name: hostapd
+    masked: no
+    enabled: "{{ 'yes' if mgt_ap.enabled else 'no' }}"

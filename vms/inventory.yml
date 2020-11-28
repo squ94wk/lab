@@ -27,6 +27,7 @@ local:
             - dev: wlp4s0
           ip: 10.16.1.1
           netmask: 255.255.0.0
+          cidr: 10.16.0.0/16
           dhcp:
             start: 10.16.1.2
             end: 10.16.1.254

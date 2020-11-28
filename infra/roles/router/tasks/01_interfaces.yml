@@ -1,0 +1,57 @@
+---
+- name: Install vlan package
+  become: yes
+  package:
+    name: vlan
+    state: present
+    update_cache: yes
+    install_recommends: no
+
+- name: Enable the 802.1q module
+  become: yes
+  copy:
+    dest: /etc/modules-load.d/8021q.conf
+    content: |
+      8021q
+
+- name: Create eth0
+  become: yes
+  template:
+    src: templates/etc/network/eth0.network.j2
+    dest: /etc/systemd/network/00-eth0.network
+
+- name: Create interfaces
+  become: yes
+  template:
+    src: templates/etc/network/interface.netdev.j2
+    dest: /etc/systemd/network/{{ vlan.priority }}-{{ vlan.name }}.netdev
+  loop: "{{ vlans }}"
+  loop_control:
+    loop_var: vlan
+
+- name: Create interfaces
+  become: yes
+  template:
+    src: templates/etc/network/interface.network.j2
+    dest: /etc/systemd/network/{{ vlan.priority }}-{{ vlan.name }}.network
+  loop: "{{ vlans }}"
+  loop_control:
+    loop_var: vlan
+
+- name: Create management AP
+  become: yes
+  template:
+    src: templates/etc/network/wireless.network.j2
+    dest: /etc/systemd/network/{{ mgt_ap.priority }}-wireless.network
+
+- name: Configure sysctl
+  become: yes
+  sysctl:
+    name: "{{ item.opt }}"
+    value: "{{ item.val }}"
+    sysctl_set: yes
+    reload: yes
+  loop:
+    - { opt: "net.ipv4.ip_forward", val: "1" }
+    - { opt: "net.ipv4.conf.all.arp_filter", val: "0" }
+    - { opt: "net.ipv4.conf.all.rp_filter", val: "2" }

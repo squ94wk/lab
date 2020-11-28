@@ -1,0 +1,16 @@
+---
+- name: Set up interfaces
+  include_tasks: 01_interfaces.yml
+
+- name: DHCP
+  include_tasks: 02_dhcp.yml
+
+- name: Management AP
+  include_tasks: 03_mgt_ap.yml
+  when: mgt_ap.enabled
+
+- name: Set up firewall rules
+  include_tasks: 04_nftables.yml
+
+- name: Setup Traffic Control
+  include_tasks: 05_qos.yml

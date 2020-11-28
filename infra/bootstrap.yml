@@ -4,6 +4,12 @@
   tags:
     - consul
 
+- hosts: router
+  roles:
+    - name: router
+  tags:
+    - router
+
 - hosts: dns
   roles:
     - name: bind

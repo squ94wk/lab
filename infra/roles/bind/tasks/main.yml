@@ -30,7 +30,6 @@
   with_items:
     - /etc/bind
     - /var/cache/bind
-    - /etc/bind/zones
 
 - name: Copy config files
   become: yes

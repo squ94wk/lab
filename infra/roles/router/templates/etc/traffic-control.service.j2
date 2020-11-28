@@ -1,0 +1,9 @@
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/tc qdisc add dev wan root handle 1: prio
+ExecStart=/usr/sbin/tc qdisc add dev wan parent 1:1 handle 10: sfq
+ExecStart=/usr/sbin/tc qdisc add dev wan parent 1:2 handle 20: tbf rate 5mbit burst 1m limit 1m
+ExecStart=/usr/sbin/tc qdisc add dev wan parent 1:3 handle 30: sfq
+
+[Install]
+WantedBy=sys-subsystem-net-devices-wan.device

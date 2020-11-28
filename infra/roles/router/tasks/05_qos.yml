@@ -1,0 +1,12 @@
+---
+- name: Create service
+  become: yes
+  template:
+    src: templates/etc/traffic-control.service.j2
+    dest: /etc/systemd/system/traffic-control.service
+
+- name: Enable Service
+  systemd:
+    name: traffic-control
+    enabled: yes
+    daemon_reload: yes
