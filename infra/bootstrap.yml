@@ -16,3 +16,9 @@
   tags:
     - dns
     - bind
+
+- hosts: node_exporter
+  roles:
+    - name: node_exporter
+  tags:
+    - node_exporter

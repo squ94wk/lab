@@ -107,3 +107,8 @@ router:
         to: 192.168.0.254
       ssid: Weds Mgt
       password: upn0823rclkwr7ipbsierjc
+
+node_exporter:
+  hosts:
+    router:
+      <<: *router
