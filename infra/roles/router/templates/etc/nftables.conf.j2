@@ -81,6 +81,10 @@ table inet firewall {
         iifname mgt accept
         oifname mgt ct state established,related accept
 
+        # Accept connections from home to anonymous
+        iifname home oifname anonymous accept
+        oifname home iifname anonymous ct state established,related accept
+
         # Log denied forwards
         log prefix "[nftables] Forward Denied: " flags all counter drop
 
